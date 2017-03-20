@@ -55,7 +55,7 @@ df.isnull().sum()
 All columns show zero null fields. Thus, there are no missing values, which is what we want.
 
 
-* Compare the Time feature/fields across fraudulent and normal transactions:
+* Compare the _Time_ feature/fields across fraudulent and normal transactions:
 ```
 f, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(12,4))
 
@@ -95,6 +95,12 @@ plt.yscale('log')
 plt.savefig("images/num_transactions_v_amount.png")
 ```
 ![Number of Transactions vs. Amount](images/num_transactions_v_amount.png)
+
+Most transactions are small amounts, less than $100. Fraudulent transactions have a maximum value far less than normal transactions: $2,125.87 _vs._ $25,691.16.
+```
+df.Amount[df.Class == 1].max() # => 2125.8699999999999
+df.Amount[df.Class == 0].max() # => 25691.16
+```
 
 * Compare the anonymized features across fraudulent and normal transactions:
 ```
