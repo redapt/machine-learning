@@ -1,6 +1,6 @@
 # Predicting Credit Card Fraud
 
-In this article, I will be using the free, open source "[Credit Card Fraud Detection](https://www.kaggle.com/dalpozz/creditcardfraud)" dataset found on Kaggle.
+In this article, I will be using the free and open source "[Credit Card Fraud Detection](https://www.kaggle.com/dalpozz/creditcardfraud)" dataset found on Kaggle.
 
 The dataset contains transactions made by credit cards in September 2013 by European cardholders. This dataset presents transactions that occurred in two days, where we have 492 frauds out of 284,807 transactions. The dataset is highly unbalanced; the positive class (frauds) account for 0.172% of all transactions.
 
@@ -15,7 +15,7 @@ I will also use [Amazon Machine Learning](https://aws.amazon.com/machine-learnin
 Below are what the first 5 entries (or lines) in the dataset with the V3..V27 feature/columns removed for formatting reasons:
 
 | Time | V1        | V2        | .. | V28       | Amount | Class |
-|------|-----------|-----------|----|-----------|--------|-------|
+|-----:|----------:|----------:|----|----------:|-------:|------:|
 | 0.0  | -1.359807 | -0.072781 | .. | -0.021053 | 149.62 | 0     |
 | 0.0  |  1.191857 |  0.266151 | .. |  0.014724 |   2.69 | 0     |
 | 1.0  | -1.358354 | -1.340163 | .. | -0.059752 | 378.66 | 0     |
@@ -24,10 +24,10 @@ Below are what the first 5 entries (or lines) in the dataset with the V3..V27 fe
 
 
 # Glossary
-TensorFlow is an open source software library for machine learning across a range of tasks, and developed by Google to meet their needs for systems capable of building and training neural networks to detect and decipher patterns and correlations, analogous to the learning and reasoning which humans use.
+__TensorFlow__ is an open source software library for machine learning across a range of tasks, and developed by Google to meet their needs for systems capable of building and training neural networks to detect and decipher patterns and correlations, analogous to the learning and reasoning which humans use.
 
-t-distributed stochastic neighbor embedding (t-SNE) is a machine learning algorithm for dimensionality reduction. It is a nonlinear dimensionality reduction technique that is particularly well-suited for embedding high-dimensional data into a space of two or three dimensions, which can then be visualized in a scatter plot. Specifically, it models each high-dimensional object by a two- or three-dimensional point in such a way that similar objects are modeled by nearby points and dissimilar objects are modeled by distant points.
+__t-distributed stochastic neighbor embedding (t-SNE)__ is a machine learning algorithm for dimensionality reduction. It is a nonlinear dimensionality reduction technique that is particularly well-suited for embedding high-dimensional data into a space of two or three dimensions, which can then be visualized in a scatter plot. Specifically, it models each high-dimensional object by a two- or three-dimensional point in such a way that similar objects are modeled by nearby points and dissimilar objects are modeled by distant points.
 
 # Sources
-* Andrea Dal Pozzolo, Olivier Caelen, Reid A. Johnson, and Gianluca Bontempi. "Calibrating Probability with Undersampling for Unbalanced Classification". _In Symposium on Computational Intelligence and Data Mining (CIDM)_, IEEE, 2015.
-* [Credit Card Fraud Detection](https://www.kaggle.com/dalpozz/creditcardfraud) &mdash; Anonymized credit card transactions labeled as fraudulent or genuine
+* Andrea Dal Pozzolo, Olivier Caelen, Reid A. Johnson, and Gianluca Bontempi (2015). "[Calibrating Probability with Undersampling for Unbalanced Classification](http://ieeexplore.ieee.org/document/7376606)". _In Symposium on Computational Intelligence and Data Mining (CIDM)_, IEEE. DOI: 10.1109/SSCI.2015.33
+* Kaggle: [Credit Card Fraud Detection](https://www.kaggle.com/dalpozz/creditcardfraud) &mdash; Anonymized credit card transactions labeled as fraudulent or genuine.
