@@ -74,6 +74,70 @@ plt.savefig("images/num_transactions_v_time.png")
 ```
 ![Number of Transactions vs. Time](images/num_transactions_v_time.png)
 
+It appears that the _Time_ feature looks fairly similar across both types of transactions, even though there are so few fraud transactions relative to normal ones. However, one could argue that fradulent transactions are more uniformly distributed, while normal transactions have a more cyclical distribution. This might make it easier to detect a fradulent transaction during an "off-peak" hour.
+
+* Compare the _Amount_ feature across fraudulent and normal transactions:
+```
+f, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(12,4))
+
+bins = 30
+
+ax1.hist(df.Amount[df.Class == 1], bins = bins)
+ax1.set_title('Fraud')
+
+ax2.hist(df.Amount[df.Class == 0], bins = bins)
+ax2.set_title('Normal')
+
+plt.xlabel('Amount ($)')
+plt.ylabel('Number of Transactions')
+plt.yscale('log')
+
+plt.savefig("images/num_transactions_v_amount.png")
+```
+![Number of Transactions vs. Amount](images/num_transactions_v_amount.png)
+
+* Compare the anonymized features across fraudulent and normal transactions:
+```
+# Select only the anonymized features:
+v_features = df.ix[:,1:29].columns
+
+for i, cn in enumerate(df[v_features]):
+    plt.figure()
+    sns.distplot(df[cn][df.Class == 1], bins=50)
+    sns.distplot(df[cn][df.Class == 0], bins=50)
+    plt.xlabel('')
+    plt.title('histogram of feature: ' + str(cn))
+    plt.savefig("images/histogram_of_feature-V%s.png" % (i+1))
+```
+![Histogram of Feature V1](images/histogram_of_feature-V1.png)
+![Histogram of Feature V2](images/histogram_of_feature-V2.png)
+![Histogram of Feature V3](images/histogram_of_feature-V3.png)
+![Histogram of Feature V4](images/histogram_of_feature-V4.png)
+![Histogram of Feature V5](images/histogram_of_feature-V5.png)
+![Histogram of Feature V6](images/histogram_of_feature-V6.png)
+![Histogram of Feature V7](images/histogram_of_feature-V7.png)
+![Histogram of Feature V8](images/histogram_of_feature-V8.png)
+![Histogram of Feature V9](images/histogram_of_feature-V9.png)
+![Histogram of Feature V10](images/histogram_of_feature-V10.png)
+![Histogram of Feature V11](images/histogram_of_feature-V11.png)
+![Histogram of Feature V12](images/histogram_of_feature-V12.png)
+![Histogram of Feature V13](images/histogram_of_feature-V13.png)
+![Histogram of Feature V14](images/histogram_of_feature-V14.png)
+![Histogram of Feature V15](images/histogram_of_feature-V15.png)
+![Histogram of Feature V16](images/histogram_of_feature-V16.png)
+![Histogram of Feature V17](images/histogram_of_feature-V17.png)
+![Histogram of Feature V18](images/histogram_of_feature-V18.png)
+![Histogram of Feature V19](images/histogram_of_feature-V19.png)
+![Histogram of Feature V20](images/histogram_of_feature-V20.png)
+![Histogram of Feature V21](images/histogram_of_feature-V21.png)
+![Histogram of Feature V22](images/histogram_of_feature-V22.png)
+![Histogram of Feature V23](images/histogram_of_feature-V23.png)
+![Histogram of Feature V24](images/histogram_of_feature-V24.png)
+![Histogram of Feature V25](images/histogram_of_feature-V25.png)
+![Histogram of Feature V26](images/histogram_of_feature-V26.png)
+![Histogram of Feature V27](images/histogram_of_feature-V27.png)
+![Histogram of Feature V28](images/histogram_of_feature-V28.png)
+
 # Glossary
 __TensorFlow__ is an open source software library for machine learning across a range of tasks, and developed by Google to meet their needs for systems capable of building and training neural networks to detect and decipher patterns and correlations, analogous to the learning and reasoning which humans use.
 
