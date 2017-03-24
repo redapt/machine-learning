@@ -1,5 +1,8 @@
 # Predicting Credit Card Fraud
 
+by Christoph Champ, Redapt, Inc. (March 2017)
+<p><small>last updated: 2017-03-24</small></p>
+
 In this article, I will be using the free and open source "[Credit Card Fraud Detection](https://www.kaggle.com/dalpozz/creditcardfraud)" dataset found on Kaggle.
 
 The dataset is in CSV format and contains transactions made by credit cards in September 2013 by European cardholders. This dataset presents transactions that occurred in two days, where we have 492 frauds out of 284,807 transactions. The dataset is highly unbalanced; the positive class (frauds) account for 0.172% of all transactions.
@@ -12,8 +15,8 @@ I will also use [Amazon Machine Learning](https://aws.amazon.com/machine-learnin
 
 ## Prerequisites
 
-For the non-Amazon ML and Google ML analysis, I will be using Python with the following Python modules:
-* [Pandas](http://pandas.pydata.org) &mdash; Powerful data structures for data analysis, time series,and statistics.
+For the non-Amazon ML and non-Google ML analysis, I will be using Python with the following Python modules:
+* [Pandas](http://pandas.pydata.org) &mdash; Powerful data structures for data analysis, time series, and statistics.
 * [NumPy](http://www.numpy.org)  &mdash; Array processing for numbers, strings, records, and objects.
 * [TensorFlow](http://tensorflow.org/)
 * [sklearn](https://pypi.python.org/pypi/scikit-learn/) &mdash; A set of python modules for machine learning and data mining.
@@ -96,7 +99,7 @@ plt.savefig("images/num_transactions_v_amount.png")
 ```
 ![Number of Transactions vs. Amount](images/num_transactions_v_amount.png)
 
-Most transactions are small amounts, less than $100. Fraudulent transactions have a maximum value far less than normal transactions: $2,125.87 _vs._ $25,691.16.
+Most fraudulent transactions are small amounts, less than $100. Fraudulent transactions have a maximum value far less than normal transactions: $2,125.87 _vs._ $25,691.16.
 ```
 df.Amount[df.Class == 1].max() # => 2125.8699999999999
 df.Amount[df.Class == 0].max() # => 25691.16
@@ -143,6 +146,13 @@ for i, cn in enumerate(df[v_features]):
 ![Histogram of Feature V26](images/histogram_of_feature-V26.png)
 ![Histogram of Feature V27](images/histogram_of_feature-V27.png)
 ![Histogram of Feature V28](images/histogram_of_feature-V28.png)
+
+* Drop all of the features that have very similar distributions between the two types of transactions:
+```
+df = df.drop(['V28','V27','V26','V25','V24','V23','V22','V20','V15','V13','V8'], axis =1)
+```
+
+## Visualizing the Data with t-SNE
 
 # Glossary
 __TensorFlow__ is an open source software library for machine learning across a range of tasks, and developed by Google to meet their needs for systems capable of building and training neural networks to detect and decipher patterns and correlations, analogous to the learning and reasoning which humans use.
