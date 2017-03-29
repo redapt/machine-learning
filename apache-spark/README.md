@@ -70,7 +70,7 @@ __Apache Spark__ is an open-source cluster-computing framework. Originally devel
   * Open sourced in 2010 and transferred to Apache in 2013.
   * A top-level Apache project, as of 2017.
   * Spark is winner of Daytona GraySort contesting 2014, sorting a petabyte 3 times faster and using 10 times less hardware than Hadoop's MapReduce.
-  * "Apache Spark is the Taylor Swift of big data software. The open source technology has been around and popular for a few years. But 2015 was the year Spark went from an ascendant technology to a bona fide superstar". [Reference](http://fortune.com/2015/09/25/apache-spark-survey/ Survey shows huge popularity spike for Apache Spark).
+  * "Apache Spark is the Taylor Swift of big data software. The open source technology has been around and popular for a few years. But 2015 was the year Spark went from an ascendant technology to a bona fide superstar". [Reference](http://fortune.com/2015/09/25/apache-spark-survey/).
 
 * Spark use cases
   * Fraud detection: Spark streaming an machine learning applied to prevent fraud.
@@ -125,6 +125,18 @@ id,text
 7,"apache hadoop"
 ```
 
+The text document classification pipeline we will use has the following workflow:
+* Training workflow: Input is a set of text documents, where each document is labelled. Stages while training the ML model are:
+  * Split each text document (or lines in our `trains.csv` file) into words;
+  * Convert each document's words into a numerical feature vector; and
+  * Create a prediction model using the feature vectors and labels.
+* Test/prediction workflow: Input is a set of text documents and the goal is to predict a label for each document. Stages while testing or making predictions with the ML model are:
+  * Split each text document (or lines in our `test.csv` file) into words;
+  * Convert each document's words into a numerical feature vector; and
+  * Use the trained model to make predictions on the feature vector.
+
+For our simple example, we will use the LogisticRegression algorithm. We do not need to use this algorithem, however, it is one of the simplest to use, so we will start with this (I will provide examples of more complex algorithms later on).
+
 Start up the pyspark REPL:
 ```
 $ pyspark
@@ -133,42 +145,51 @@ $ pyspark
 _Note: The following commands will be run from within the pyspark REPL._
 
 ```
+# Note: This is based off of the
+# examples/src/main/python/ml/pipeline_example.py example script in the Spark
+# tarball.
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.feature import HashingTF, Tokenizer
 from pyspark.sql import SparkSession
 import pandas as pd
+
+# Initialize a Spark session
 spark = SparkSession\
     .builder\
-    .appName("PipelineExample")\
+    .appName("LogisticRegressionExample")\
     .getOrCreate()
 
 # Create DataFrame from training documents
 train_df = pd.read_csv("/data/train.csv")
 training = spark.createDataFrame(train_df)
 
-# Configure an ML pipeline, which consists of three stages: tokenizer, hashingTF, and lr. 
+# Configure an ML pipeline, which consists of three stages: tokenizer,
+# hashingTF, and lr
 tokenizer = Tokenizer(inputCol="text", outputCol="words")
 hashingTF = HashingTF(inputCol=tokenizer.getOutputCol(), outputCol="features")
 lr = LogisticRegression(maxIter=10, regParam=0.001)
 pipeline = Pipeline(stages=[tokenizer, hashingTF, lr])
 
-# Fit the pipeline to training documents.
+# Fit the pipeline to training documents
 model = pipeline.fit(training)
 
 # Create DataFrame from test documents
 test_df = pd.read_csv("/data/test.csv")
 test = spark.createDataFrame(test_df)
 
-# Make predictions on test documents and print columns of interest.
+# Make predictions on test documents and print columns of interest
 prediction = model.transform(test)
 selected = prediction.select("id", "text", "probability", "prediction")
 for row in selected.collect():
     rid, text, prob, prediction = row 
-    print("(%d, %s) --> prob=%s, prediction=%f" % (rid, text, str(prob), prediction))
+    print("(%d, %s) --> prob=%s, prediction=%f" % (
+        rid, text, str(prob), prediction))
 
 spark.stop()
 ```
+
+The above simple script should return the following for Spark MLlib predictions for the test documents:
 
 ```
 (4, spark i j k) --> prob=[0.159640773879,0.840359226121], prediction=1.000000
@@ -176,3 +197,5 @@ spark.stop()
 (6, spark hadoop spark) --> prob=[0.0692663313298,0.93073366867], prediction=1.000000
 (7, apache hadoop) --> prob=[0.982157533344,0.0178424666556], prediction=0.000000
 ```
+
+So, for this _very simple_ example, Spark MLlib made perfect predictions (i.e., all documents with the word "spark" in them were correctly labeled).
