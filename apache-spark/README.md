@@ -2,6 +2,84 @@
 
 This article will describe what Apache Spark is and provide examples of how to use it.
 
+__Apache Spark__ is an open-source cluster-computing framework. Originally developed at the University of California, Berkeley's AMPLab, the Spark codebase was later donated to the Apache Software Foundation, which has maintained it since. Spark provides an interface for programming entire clusters with implicit data parallelism and fault-tolerance.
+
+## Intoduction
+
+* What is Spark?
+ * Fast and general engine for large-scale data processing and analysis.
+ * Parallel distributed processing on commodity hardware.
+ * Easy to use.
+ * A comprehensive, unified framework for Big Data analytics.
+ * Open source and a top-level Apache project.
+
+* Spark use cases
+ * Big Data use case like intrusion detection, product recommendations, estimating financial risks, detecting genomic associations to a disease, etc. require analysis on large-scale data.
+ * In depth analysis requires a combination of tools like SQL, statistics, and machine learning to gain meaningful insights from data.
+ * Historical choices like R and Octave operate only on single node machines and are, therefore, not suitable for large volume data sets.
+ * Spark allows rich programming APIs like SQL, machine learning, graph processing, etc. to run on clusters of computers to achieve large-scale data processing and analysis.
+
+* Spark and distributed processing
+ * Challenges of distributed processing:
+  * Distributed programming is much more complex than single node programming.
+  * Data must be partitioned across servers, increasing the latency if data has to be shared between servers over the network.
+  * Chances of failure increases with the increase in the number of servers.
+ * Spark makes distributed processing easy:
+  * Provides a distributed and parallel processing framework.
+  * Provides scalability.
+  * Provides fault-tolerance.
+  * Provides a programming paradigm that makes it easy to write code in a parallel manner.
+
+* Spark and its speed
+ * Lightning fast speeds due to in-memory caching and a [DAG-based](https://en.wikipedia.org/wiki/Directed_acyclic_graph) processing engine.
+ * 100 times faster than Hadoop's MapReduce for in-memory computations and 10 time faster for on-disk.
+ * Well suited for iterative algorithms in machine learning
+ * Fast, real-time response to user queries on large in-memory data sets.
+ * Low latency data analysis applied to processing live data streams
+
+* Spark is easy to use
+ * General purpose programming model using expressive languages like Scala, Python, and Java.
+ * Existing libraries and API makes it easy to write programs combining batch, streaming, interactive machine learning and complex queries in a single application.
+ * An interactive shell is available for Python and Scala
+ * Built for performance and reliability, written in Scala and runs on top of Java Virtual Machine (JVM).
+ * Operational and debugging tools from the Java stack are available for programmers.
+
+* Spark components
+ * Spark SQL
+ * Spark Streaming
+ * MLib (machine learning)
+ * GraphX (graph)
+ * SparkR
+
+* Spark is a comprehensive unified framework for Big Data analytics
+ * Collapses the data science pipeline by allowing pre-processing of data to model evaluation in one single system.
+ * Spark provides an API for data munging, [Extract, transform, load](https://en.wikipedia.org/wiki/Extract,_transform,_load) (ETL), machine learning, graph processing, streaming, interactive, and batch processing. Can replace several SQL, streaming, and complex analytics systems with one unified environment.
+ * Simplifies application development, deployment, and maintenance.
+ * Strong integration with a variety of tools in the Hadoop ecosystem.
+ * Can read and write to different data formats and data sources, including HDFS, Cassandra, S3, and HBase.
+
+* Spark is _not_ a data storage system
+ * Spark is _not_ a data store but is versatile in reading from and writing to a variety of data sources.
+ * Can access traditional business intelligence (BI) tools using a server mode that provides standard [Java Database Connectivity](https://en.wikipedia.org/wiki/Java_Database_Connectivity) (JDBC) and [Open Database Connectivity](https://en.wikipedia.org/wiki/Open_Database_Connectivity) (ODBC).
+ * The DataFrame API provides a pluggable mechanism to access structured data using Spark SQL.
+ * Its API provides tight optimization integration, thereby enhances the speed of the Spark jobs that process vast amounts of data.
+
+* History of Spark
+ * Originated as a research project in 2009 at [UC Berkley](https://amplab.cs.berkeley.edu/).
+ * Motivated by MapReduce and the need to apply machine learning in a scalable fashion.
+ * Open sourced in 2010 and transferred to Apache in 2013.
+ * A top-level Apache project, as of 2017.
+ * Spark is winner of Daytona GraySort contesting 2014, sorting a petabyte 3 times faster and using 10 times less hardware than Hadoop's MapReduce.
+ * "Apache Spark is the Taylor Swift of big data software. The open source technology has been around and popular for a few years. But 2015 was the year Spark went from an ascendant technology to a bona fide superstar". [Reference](http://fortune.com/2015/09/25/apache-spark-survey/ Survey shows huge popularity spike for Apache Spark).
+
+* Spark use cases
+ * Fraud detection: Spark streaming an machine learning applied to prevent fraud.
+ * Network intrusion detection: Machine learning applied to detect cyber hacks.
+ * Customer segmentation and personalization: Spark SQL and machine learning applied to maximize customer lifetime value.
+ * Social media sentiment analysis: Spark streaming, Spark SQL, and Stanford's CoreNLP wrapper helps achieve sentiment analysis.
+ * Real-time ad targeting: Spark used to maximize Online ad revenues.
+ * Predictive healthcare: Spark used to optimize healthcare costs.
+
 ## Spark basics
 
 The official Apache Spark website provides detailed documentation on [how to install Apache Spark](https://spark.apache.org/docs/latest/). In this article, I will assume you already have Spark installed. However, if you wish, I have also provided a [Dockerfile](Dockerfile) that will build a Docker image of everything you will need to start a Docker container running Apache Spark, along with some other tools and packages used in this article (e.g., R, iPython, Pandas, NumPy, etc.).
