@@ -209,7 +209,7 @@ In this example, I will use some of the data found on the [Movie Review Data](ht
 
 The actual dataset I will use is the "[sentence polarity dataset](http://www.cs.cornell.edu/people/pabo/movie-review-data/rt-polaritydata.tar.gz)". This data was first used in the paper by Bo Pang and Lillian Lee (2005). "Seeing stars: Exploiting class relationships for sentiment categorization with respect to rating scales". ''Proceedings of the ACL''.
 
-Each line in the dataset (there are two files in the dataset: 1) positive sentiments; and 2) negative sentiments) corresponds to a single snippet (usually containing roughly one sentence) taken from the [Rotten Tomatoes](https://www.rottentomatoes.com/) website for movie reviews. Reviews marked as "fresh" are assumed to be positive, and those for reviews marked as "rotten" are negative. All text in the snippets (i.e., each line of text) is lowercased and spaces are inserted around spaces.
+Each line in the dataset (there are two files in the dataset: 1) positive sentiments; and 2) negative sentiments) corresponds to a single snippet (usually containing roughly one sentence) taken from the [Rotten Tomatoes](https://www.rottentomatoes.com/) website for movie reviews. Reviews marked as "fresh" are assumed to be positive, and those for reviews marked as "rotten" are negative. All text in the snippets (i.e., each line of text) is lowercased and spaces are inserted around spaces. There are 5,331 positive and 5,331 negative processed sentences / snippets in the dataset.
 
 * Examples of negative sentiment lines:
 ```
@@ -225,6 +225,7 @@ offers that rare combination of entertainment and education .
 if this movie were a book , it would be a page-turner , you can't wait to see what happens next .
 ```
 
+The pyspark script for performing text analysis using a [Naive Bayes classifier](https://en.wikipedia.org/wiki/Naive_Bayes_classifier) via Spark MLlib:
 ```
 from pyspark import SparkContext, SparkConf
 from pyspark.mllib.feature import HashingTF
@@ -321,4 +322,4 @@ Classifier correctly predicted category 73.3380314776 percent of the time
 avg / total       0.73      0.73      0.73      4257
 ```
 
-We can see that our [Naive Bayes classifier](https://en.wikipedia.org/wiki/Naive_Bayes_classifier) correctly predicted ~73% of the sentiments (either positive or negative) from the dataset.
+We can see that our Naive Bayes classifier correctly predicted ~73% of the sentiments (either positive or negative) from the dataset.
