@@ -1,9 +1,9 @@
 FROM ubuntu:16.04
 
-MAINTAINER Christoph Champ <christoph.champ@gmail.com>
+MAINTAINER Christoph Champ <cchamp@redapt.com>
 LABEL version="spark_2.1_hadoop_2.7"
 
-# Install Python.
+# Install Python
 RUN \
   apt-get update && \
   apt-get install -y python python-dev python-pip python-virtualenv && \
@@ -26,11 +26,12 @@ RUN \
   apt-get install -y curl wget unzip vim git htop byobu && \
   rm -rf /var/lib/apt/lists/*
 
+# Install extra packages required by and/or useful for working with Apache
+# Spark
 RUN pip install ipython numpy pandas
 
-ARG JAVA_MAJOR_VERSION=8
-
 # Install Java
+ARG JAVA_MAJOR_VERSION=8
 RUN \
   echo oracle-java${JAVA_MAJOR_VERSION}-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
   add-apt-repository -y ppa:webupd${JAVA_MAJOR_VERSION}team/java && \
@@ -53,7 +54,10 @@ RUN ./R/install-dev.sh
 
 ENV MAVEN_OPTS "-Xmx2g -XX:ReservedCodeCacheSize=512m"
 ARG MAJOR_HADOOP_VERSION="2.7"
-RUN ./build/mvn -Pyarn -Psparkr -Pmesos -Phive -Phive-thriftserver -Phadoop-${MAJOR_HADOOP_VERSION} -Dhadoop.version=${MAJOR_HADOOP_VERSION}.0 -DskipTests clean package
+RUN ./build/mvn -Pyarn -Psparkr -Pmesos -Phive -Phive-thriftserver \
+  -Phadoop-${MAJOR_HADOOP_VERSION} \
+  -Dhadoop.version=${MAJOR_HADOOP_VERSION}.0 \
+  -DskipTests clean package
 
 ENV SPARK_HOME /spark
 ENV PYSPARK_DRIVER_PYTHON ipython
