@@ -30,7 +30,6 @@ $ echo $PATH
 Let's pretend we have a very simple dataset where we want to do some basic text document classification. Our dataset consists of a CSV file with one text document per line the file. Our example dataset is just lines that either contain the word "spark" or do not. This will be the _target_ of our MLlib training and will be what we use to create our ML model. Our training dataset has three columns: document ID (`id`), the text of the document (`text`), and a `label` value of 0.0 or 1.0 for whether or not the line has our _target_ word "spark" or not.
 ```
 $ cat train.csv 
-```
 id,text,label
 0,"a b c d e spark",1.0
 1,"b d",0.0
