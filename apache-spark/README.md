@@ -105,7 +105,7 @@ $ echo $PATH
 
 ### A simple example using Apache Spark MLlib
 
-Let's pretend we have a very simple dataset where we want to do some basic text document classification. Our dataset consists of a CSV file with one text document per line the file. Our example dataset is just lines that either contain the word "spark" or do not. This will be the _target_ of our MLlib training and will be what we use to create our ML model. Our training dataset has three columns: document ID (`id`), the text of the document (`text`), and a `label` value of 0.0 or 1.0 for whether or not the line has our _target_ word "spark" or not.
+Let's pretend we have a very simple dataset where we want to do some basic text document classification. Our dataset consists of a CSV file with one text document per line in the file. Our example dataset is just lines that either contain the word "spark" or do not. This will be the _target_ of our MLlib training and will be what we use to create our ML model. Our training dataset has three columns: document ID (`id`), the text of the document (`text`), and a `label` value of 0.0 or 1.0 for whether or not the line has our _target_ word "spark" or not.
 ```
 $ cat train.csv 
 id,text,label
@@ -136,6 +136,9 @@ The text document classification pipeline we will use has the following workflow
   * Use the trained model to make predictions on the feature vector.
 
 For our simple example, we will use the LogisticRegression algorithm. We do not need to use this algorithem, however, it is one of the simplest to use, so we will start with this (I will provide examples of more complex algorithms later on).
+
+
+A tokenizer that converts the input string to lowercase and then splits it by white spaces.
 
 Start up the pyspark REPL:
 ```
@@ -199,3 +202,123 @@ The above simple script should return the following for Spark MLlib predictions 
 ```
 
 So, for this _very simple_ example, Spark MLlib made perfect predictions (i.e., all documents with the word "spark" in them were correctly labeled).
+
+### A more complex text classification example
+
+In this example, I will use some of the data found on the [Movie Review Data](http://www.cs.cornell.edu/people/pabo/movie-review-data/) dataset (aka the "sentiment polarity dataset") by Pang and Lee from Cornell University (July 2005).
+
+The actual dataset I will use is the "[sentence polarity dataset](http://www.cs.cornell.edu/people/pabo/movie-review-data/rt-polaritydata.tar.gz)". This data was first used in the paper by Bo Pang and Lillian Lee (2005). "Seeing stars: Exploiting class relationships for sentiment categorization with respect to rating scales". ''Proceedings of the ACL''.
+
+Each line in the dataset (there are two files in the dataset: 1) positive sentiments; and 2) negative sentiments) corresponds to a single snippet (usually containing roughly one sentence) taken from the [Rotten Tomatoes](https://www.rottentomatoes.com/) website for movie reviews. Reviews marked as "fresh" are assumed to be positive, and those for reviews marked as "rotten" are negative. All text in the snippets (i.e., each line of text) is lowercased and spaces are inserted around spaces.
+
+* Examples of negative sentiment lines:
+```
+simplistic , silly and tedious .
+the story is also as unoriginal as they come , already having been recycled more times than i'd care to count .
+unfortunately the story and the actors are served with a hack script .
+```
+
+* Examples of positive sentiment lines:
+```
+take care of my cat offers a refreshingly different slice of asian cinema .
+offers that rare combination of entertainment and education .
+if this movie were a book , it would be a page-turner , you can't wait to see what happens next .
+```
+
+```
+from pyspark import SparkContext, SparkConf
+from pyspark.mllib.feature import HashingTF
+from pyspark.mllib.regression import LabeledPoint
+from pyspark.mllib.classification import NaiveBayes
+
+#http://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html
+from sklearn.metrics import classification_report
+
+conf = SparkConf().setMaster("local[*]").setAppName("Naive_Bayes")
+sc   = SparkContext(conf=conf)
+
+print "Running Spark Version %s" % (sc.version)
+
+#== Load positive and negative sentences from the Senetence Polarity Dataset
+
+#word to vector space converter, limit to 10000 words
+htf = HashingTF(10000)
+
+#let 1 - positive class, 0 - negative class
+#tokenize sentences and transform them into vector space model
+
+positiveData = sc.textFile("/data/rt-polarity.pos")
+posdata = positiveData.map(
+    lambda text : LabeledPoint(1, htf.transform(text.split(" "))))
+print "No. of Positive Sentences: " + str(posdata.count())
+posdata.persist()
+
+negativeData = sc.textFile("/data/rt-polarity.neg")
+negdata = negativeData.map(
+    lambda text : LabeledPoint(0, htf.transform(text.split(" "))))
+print "No. of Negative Sentences: " + str(negdata.count())
+negdata.persist()
+
+#== Split, Train and Calculate Prediction Labels ==========================
+
+# Split positive and negative data 60/40 into training and test data sets
+ptrain, ptest = posdata.randomSplit([0.6, 0.4])
+ntrain, ntest = negdata.randomSplit([0.6, 0.4])
+
+#union train data with positive and negative sentences
+trainh = ptrain.union(ntrain)
+#union test data with positive and negative sentences
+testh = ptest.union(ntest)
+
+# Train a Naive Bayes model on the training data
+model = NaiveBayes.train(trainh)
+
+# Compare predicted labels to actual labels
+prediction_and_labels = testh.map(lambda point: (
+    model.predict(point.features), point.label))
+
+# Filter to only correct predictions
+correct = prediction_and_labels.filter(
+    lambda (predicted, actual): predicted == actual)
+
+# Calculate and print accuracy rate
+accuracy = correct.count() / float(testh.count())
+
+msg = "Classifier correctly predicted category "
+msg += str(accuracy * 100)
+msg += " percent of the time"
+print msg
+
+# Classification Report using Scikit-Learn
+y_true = []
+y_pred = []
+for x in prediction_and_labels.collect():
+    xx = list(x)
+    
+    try:
+        tt = int(xx[1])
+        pp = int(xx[0])
+        y_true.append(tt)
+        y_pred.append(pp)
+    except:
+        continue
+        
+target_names = ['neg 0', 'pos 1']
+print classification_report(y_true, y_pred, target_names=target_names)
+```
+
+The results of running the above script:
+```
+Running Spark Version 2.1.0
+No. of Positive Sentences: 5331
+No. of Negative Sentences: 5331
+Classifier correctly predicted category 73.3380314776 percent of the time
+             precision    recall  f1-score   support
+
+      neg 0       0.74      0.73      0.74      2143
+      pos 1       0.73      0.73      0.73      2114
+
+avg / total       0.73      0.73      0.73      4257
+```
+
+We can see that our [Naive Bayes classifier](https://en.wikipedia.org/wiki/Naive_Bayes_classifier) correctly predicted ~73% of the sentiments (either positive or negative) from the dataset.

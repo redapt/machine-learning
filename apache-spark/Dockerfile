@@ -28,7 +28,8 @@ RUN \
 
 # Install extra packages required by and/or useful for working with Apache
 # Spark
-RUN pip install ipython numpy pandas
+RUN pip install --upgrade pip
+RUN pip install ipython numpy scipy sklearn pandas
 
 # Install Java
 ARG JAVA_MAJOR_VERSION=8
@@ -61,4 +62,5 @@ RUN ./build/mvn -Pyarn -Psparkr -Pmesos -Phive -Phive-thriftserver \
 
 ENV SPARK_HOME /spark
 ENV PYSPARK_DRIVER_PYTHON ipython
+ENV PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.4-src.zip:${PYTHONPATH}"
 ENV PATH="/spark/bin:${PATH}"
