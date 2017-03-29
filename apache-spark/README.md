@@ -25,34 +25,27 @@ $ echo $PATH
 /spark/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
 
-###A simple example using Apache Spark MLlib
+### A simple example using Apache Spark MLlib
 
-Let's pretend we have a very simple dataset where we want to do some basic text document classification. Our dataset consists of a CSV file with one text document per line the file. Our example dataset is just lines by a _Lorem Ipsum_ generator, however, I have randomly inserted a "foobar" word in some of the lines (or text documents). This will be the _target_ of our MLlib training and will be what we use to create our ML model. Our training dataset has three columns: document ID (`id`), the text of the document (`text`), and a `label` value of 0 or 1 for whether or not the line has our _target_ word "foobar" or not.
+Let's pretend we have a very simple dataset where we want to do some basic text document classification. Our dataset consists of a CSV file with one text document per line the file. Our example dataset is just lines that either contain the word "spark" or do not. This will be the _target_ of our MLlib training and will be what we use to create our ML model. Our training dataset has three columns: document ID (`id`), the text of the document (`text`), and a `label` value of 0.0 or 1.0 for whether or not the line has our _target_ word "spark" or not.
 ```
-$ cat lorem_ipsum-train.csv 
+$ cat train.csv 
+```
 id,text,label
-0,"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",0
-1,"Praesent foobar id dui eleifend, posuere elit quis, venenatis libero.",1
-2,"Donec scelerisque quam augue, eget commodo tortor mollis ut.",0
-3,"Phasellus imperdiet semper foobar sapien, id tristique orci.",1
-4,"Vestibulum volutpat eros ut odio iaculis, at sagittis dui blandit.",0
-5,"Pellentesque ornare quam efficitur nisl pulvinar, at sodales nunc tincidunt.",0
-6,"Phasellus posuere, purus at blandit foobar hendrerit, nisl eros elementum lorem, id placerat arcu orci eget mauris.",1
-7,"Interdum et malesuada fames foobar ac ante ipsum primis in faucibus.",1
-8,"Vivamus hendrerit a nisi non hendrerit.",0
-9,"Fusce at pulvinar neque.",0.0
+0,"a b c d e spark",1.0
+1,"b d",0.0
+2,"spark f g h",1.0
+3,"hadoop mapreduce",0.0
 ```
 
-Our text dataset (i.e., the one we will use to test how accurate our ML model is at predicting which lines contain our "foobar" word) has the same structure as our training dataset, except there are different text documents (aka "lines") and the `label` column (i.e., whether or not the text document contains the "foobar" word or not) is not included, as this is what we are trying to predict.
+Our test dataset (i.e., the one we will use to test how accurate our ML model is at predicting which lines contain our "spark" word) has the same structure as our training dataset, except there are different text documents (aka "lines") and the `label` column (i.e., whether or not the text document contains the "spark" word or not) is not included, as this is what we are trying to predict.
 ```
-$ cat lorem_ipsum-test.csv 
+$ cat test.csv 
 id,text
-10,"Sed pretium massa ex, quis pretium foobar neque consequat auctor."
-11,"Sed ornare orci lorem, consequat bibendum leo consectetur iaculis."
-12,"Pellentesque at laoreet elit, nec auctor leo foobar."
-13,"Mauris lacinia magna risus, eu tincidunt lectus suscipit vitae."
-14,"Etiam id turpis mi."
-15,"Aliquam ut lorem foobar eget ex fringilla maximus non non ligula."
+4,"spark i j k"
+5,"l m n"
+6,"spark hadoop spark"
+7,"apache hadoop"
 ```
 
 Start up the pyspark REPL:
