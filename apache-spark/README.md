@@ -232,80 +232,101 @@ from pyspark.mllib.feature import HashingTF
 from pyspark.mllib.regression import LabeledPoint
 from pyspark.mllib.classification import NaiveBayes
 
-#http://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html
 from sklearn.metrics import classification_report
 
-conf = SparkConf().setMaster("local[*]").setAppName("Naive_Bayes")
-sc   = SparkContext(conf=conf)
 
-print "Running Spark Version %s" % (sc.version)
+def load_dataset(posfile, negfile):
+    """Load positive and negative sentences give dataset.
+    Let 0 = negative class; 1 = positive class
+    Tokenize sentences and transform them into vector space model.
+    """
 
-#== Load positive and negative sentences from the Senetence Polarity Dataset
+    # Word-to-vector space converter (limit to 10000 words)
+    htf = HashingTF(10000)
 
-#word to vector space converter, limit to 10000 words
-htf = HashingTF(10000)
+    positiveData = sc.textFile(posfile)
+    posdata = positiveData.map(
+        lambda text: LabeledPoint(1, htf.transform(text.split(" "))))
+    posdata.persist()
 
-#let 1 - positive class, 0 - negative class
-#tokenize sentences and transform them into vector space model
+    negativeData = sc.textFile(negfile)
+    negdata = negativeData.map(
+        lambda text: LabeledPoint(0, htf.transform(text.split(" "))))
+    negdata.persist()
 
-positiveData = sc.textFile("/data/rt-polarity.pos")
-posdata = positiveData.map(
-    lambda text : LabeledPoint(1, htf.transform(text.split(" "))))
-print "No. of Positive Sentences: " + str(posdata.count())
-posdata.persist()
+    return posdata, negdata
 
-negativeData = sc.textFile("/data/rt-polarity.neg")
-negdata = negativeData.map(
-    lambda text : LabeledPoint(0, htf.transform(text.split(" "))))
-print "No. of Negative Sentences: " + str(negdata.count())
-negdata.persist()
 
-#== Split, Train and Calculate Prediction Labels ==========================
+def naive_bayes_classifier(posdata, negdata):
+    """Split, train, and calculate prediction labels."""
 
-# Split positive and negative data 60/40 into training and test data sets
-ptrain, ptest = posdata.randomSplit([0.6, 0.4])
-ntrain, ntest = negdata.randomSplit([0.6, 0.4])
+    # Split positive and negative data 60/40 into training and test data sets
+    ptrain, ptest = posdata.randomSplit([0.6, 0.4])
+    ntrain, ntest = negdata.randomSplit([0.6, 0.4])
 
-#union train data with positive and negative sentences
-trainh = ptrain.union(ntrain)
-#union test data with positive and negative sentences
-testh = ptest.union(ntest)
+    # Union train data with positive and negative sentences
+    trainh = ptrain.union(ntrain)
+    # Union test data with positive and negative sentences
+    testh = ptest.union(ntest)
 
-# Train a Naive Bayes model on the training data
-model = NaiveBayes.train(trainh)
+    # Train a Naive Bayes model on the training data
+    model = NaiveBayes.train(trainh)
 
-# Compare predicted labels to actual labels
-prediction_and_labels = testh.map(lambda point: (
-    model.predict(point.features), point.label))
+    # Compare predicted labels to actual labels
+    prediction_and_labels = testh.map(
+        lambda point: (model.predict(point.features), point.label))
 
-# Filter to only correct predictions
-correct = prediction_and_labels.filter(
-    lambda (predicted, actual): predicted == actual)
+    # Filter to only correct predictions
+    correct = prediction_and_labels.filter(
+        lambda (predicted, actual): predicted == actual)
 
-# Calculate and print accuracy rate
-accuracy = correct.count() / float(testh.count())
+    # Calculate and return accuracy rate
+    accuracy = correct.count() / float(testh.count())
 
-msg = "Classifier correctly predicted category "
-msg += str(accuracy * 100)
-msg += " percent of the time"
-print msg
+    return prediction_and_labels, accuracy
 
-# Classification Report using Scikit-Learn
-y_true = []
-y_pred = []
-for x in prediction_and_labels.collect():
-    xx = list(x)
-    
-    try:
-        tt = int(xx[1])
-        pp = int(xx[0])
-        y_true.append(tt)
-        y_pred.append(pp)
-    except:
-        continue
-        
-target_names = ['neg 0', 'pos 1']
-print classification_report(y_true, y_pred, target_names=target_names)
+
+def gen_classification_report(prediction_and_labels):
+    """Classification Report using Scikit-Learn.
+    SEE: http://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html
+    """
+    y_true = []
+    y_pred = []
+    for x in prediction_and_labels.collect():
+        xx = list(x)
+        try:
+            tt = int(xx[1])
+            pp = int(xx[0])
+            y_true.append(tt)
+            y_pred.append(pp)
+        except:
+            continue
+
+    target_names = ['neg 0', 'pos 1']
+
+    return classification_report(y_true, y_pred, target_names=target_names)
+
+
+if __name__ == "__main__":
+
+    conf = SparkConf().setMaster("local[*]").setAppName("Naive_Bayes")
+    sc = SparkContext(conf=conf)
+
+    print "Running Spark Version %s" % (sc.version)
+
+    posdata, negdata = load_dataset(
+        "/data/rt-polarity.pos", "/data/rt-polarity.neg")
+    print "No. of Positive Sentences: " + str(posdata.count())
+    print "No. of Negative Sentences: " + str(negdata.count())
+
+    prediction_and_labels, accuracy = naive_bayes_classifier(posdata, negdata)
+    msg = "Classifier correctly predicted category "
+    msg += str(accuracy * 100)
+    msg += " percent of the time"
+    print msg
+
+    report = gen_classification_report(prediction_and_labels)
+    print report
 ```
 
 The results of running the above script:
