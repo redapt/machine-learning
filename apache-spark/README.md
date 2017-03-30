@@ -207,7 +207,7 @@ So, for this _very simple_ example, Spark MLlib made perfect predictions (i.e., 
 
 In this example, I will use some of the data found on the [Movie Review Data](http://www.cs.cornell.edu/people/pabo/movie-review-data/) dataset (aka the "sentiment polarity dataset") by Pang and Lee from Cornell University (July 2005).
 
-The actual dataset I will use is the "[sentence polarity dataset](http://www.cs.cornell.edu/people/pabo/movie-review-data/rt-polaritydata.tar.gz)". This data was first used in the paper by Bo Pang and Lillian Lee (2005). "Seeing stars: Exploiting class relationships for sentiment categorization with respect to rating scales". ''Proceedings of the ACL''.
+The actual dataset I will use is the "[sentence polarity dataset](http://www.cs.cornell.edu/people/pabo/movie-review-data/rt-polaritydata.tar.gz)". This data was first used in the paper by Bo Pang and Lillian Lee (2005). "Seeing stars: Exploiting class relationships for sentiment categorization with respect to rating scales". _Proceedings of the ACL_.
 
 Each line in the dataset (there are two files in the dataset: 1) positive sentiments; and 2) negative sentiments) corresponds to a single snippet (usually containing roughly one sentence) taken from the [Rotten Tomatoes](https://www.rottentomatoes.com/) website for movie reviews. Reviews marked as "fresh" are assumed to be positive, and those for reviews marked as "rotten" are negative. All text in the snippets (i.e., each line of text) is lowercased and spaces are inserted around spaces. There are 5,331 positive and 5,331 negative processed sentences / snippets in the dataset.
 
@@ -231,7 +231,6 @@ from pyspark import SparkContext, SparkConf
 from pyspark.mllib.feature import HashingTF
 from pyspark.mllib.regression import LabeledPoint
 from pyspark.mllib.classification import NaiveBayes
-
 from sklearn.metrics import classification_report
 
 
