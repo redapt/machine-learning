@@ -127,7 +127,7 @@ id,text
 
 The text document classification pipeline we will use has the following workflow:
 * Training workflow: Input is a set of text documents, where each document is labelled. Stages while training the ML model are:
-  * Split each text document (or lines in our `trains.csv` file) into words;
+  * Split each text document (or lines in our `train.csv` file) into words;
   * Convert each document's words into a numerical feature vector; and
   * Create a prediction model using the feature vectors and labels.
 * Test/prediction workflow: Input is a set of text documents and the goal is to predict a label for each document. Stages while testing or making predictions with the ML model are:
@@ -151,10 +151,10 @@ _Note: The following commands will be run from within the pyspark REPL._
 # Note: This is based off of the
 # examples/src/main/python/ml/pipeline_example.py example script in the Spark
 # tarball.
-from pyspark.ml import Pipeline
-from pyspark.ml.classification import LogisticRegression
-from pyspark.ml.feature import HashingTF, Tokenizer
 from pyspark.sql import SparkSession
+from pyspark.ml.feature import Tokenizer, HashingTF
+from pyspark.ml.classification import LogisticRegression
+from pyspark.ml import Pipeline
 import pandas as pd
 
 # Initialize a Spark session
@@ -167,10 +167,11 @@ spark = SparkSession\
 train_df = pd.read_csv("/data/train.csv")
 training = spark.createDataFrame(train_df)
 
-# Configure an ML pipeline, which consists of three stages: tokenizer,
-# hashingTF, and lr
+# Configure an ML pipeline, which consists of three stages:
+# tokenizer, hashingTF, and lr
 tokenizer = Tokenizer(inputCol="text", outputCol="words")
-hashingTF = HashingTF(inputCol=tokenizer.getOutputCol(), outputCol="features")
+hashingTF = HashingTF(inputCol=tokenizer.getOutputCol(),
+    outputCol="features")
 lr = LogisticRegression(maxIter=10, regParam=0.001)
 pipeline = Pipeline(stages=[tokenizer, hashingTF, lr])
 
@@ -183,11 +184,12 @@ test = spark.createDataFrame(test_df)
 
 # Make predictions on test documents and print columns of interest
 prediction = model.transform(test)
-selected = prediction.select("id", "text", "probability", "prediction")
+selected = prediction.select(
+    "id", "text", "probability", "prediction")
 for row in selected.collect():
-    rid, text, prob, prediction = row 
+    rid, text, probability, prediction = row 
     print("(%d, %s) --> prob=%s, prediction=%f" % (
-        rid, text, str(prob), prediction))
+        rid, text, str(probability), prediction))
 
 spark.stop()
 ```
