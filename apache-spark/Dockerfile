@@ -29,7 +29,7 @@ RUN \
 # Install extra packages required by and/or useful for working with Apache
 # Spark
 RUN pip install --upgrade pip
-RUN pip install ipython numpy scipy sklearn pandas
+RUN pip install ipython numpy scipy sklearn pandas matplotlib
 
 # Install Java
 ARG JAVA_MAJOR_VERSION=8

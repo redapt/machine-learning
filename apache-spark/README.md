@@ -4,7 +4,7 @@ This article will describe what Apache Spark is and provide examples of how to u
 
 __Apache Spark__ is an open-source cluster-computing framework. Originally developed at the University of California, Berkeley's AMPLab, the Spark codebase was later donated to the Apache Software Foundation, which has maintained it since. Spark provides an interface for programming entire clusters with implicit data parallelism and fault-tolerance.
 
-## Intoduction
+## Introduction
 
 * What is Spark?
   * Fast and general engine for large-scale data processing and analysis.
@@ -73,7 +73,7 @@ __Apache Spark__ is an open-source cluster-computing framework. Originally devel
   * "Apache Spark is the Taylor Swift of big data software. The open source technology has been around and popular for a few years. But 2015 was the year Spark went from an ascendant technology to a bona fide superstar". [Reference](http://fortune.com/2015/09/25/apache-spark-survey/).
 
 * Spark use cases
-  * Fraud detection: Spark streaming an machine learning applied to prevent fraud.
+  * Fraud detection: Spark streaming and machine learning applied to prevent fraud.
   * Network intrusion detection: Machine learning applied to detect cyber hacks.
   * Customer segmentation and personalization: Spark SQL and machine learning applied to maximize customer lifetime value.
   * Social media sentiment analysis: Spark streaming, Spark SQL, and Stanford's CoreNLP wrapper helps achieve sentiment analysis.
@@ -135,7 +135,7 @@ The text document classification pipeline we will use has the following workflow
   * Convert each document's words into a numerical feature vector; and
   * Use the trained model to make predictions on the feature vector.
 
-For our simple example, we will use the LogisticRegression algorithm. We do not need to use this algorithem, however, it is one of the simplest to use, so we will start with this (I will provide examples of more complex algorithms later on).
+For our simple example, we will use the LogisticRegression algorithm. We do not need to use this algorithm, however, it is one of the simplest to use, so we will start with this (I will provide examples of more complex algorithms later on).
 
 
 A tokenizer that converts the input string to lowercase and then splits it by white spaces.
