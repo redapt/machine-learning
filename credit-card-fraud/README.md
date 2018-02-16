@@ -1,7 +1,7 @@
 # Predicting Credit Card Fraud
 
 by Christoph Champ, Redapt, Inc. (March 2017)
-<p><small>last updated: 2017-03-24</small></p>
+<p><small>last updated: 2018-02-16</small></p>
 
 In this article, I will be using the free and open source "[Credit Card Fraud Detection](https://www.kaggle.com/dalpozz/creditcardfraud)" dataset found on Kaggle.
 
@@ -17,8 +17,8 @@ I will also use [Amazon Machine Learning](https://aws.amazon.com/machine-learnin
 
 For the non-Amazon ML and non-Google ML analysis, I will be using Python with the following Python modules:
 * [Pandas](http://pandas.pydata.org) &mdash; Powerful data structures for data analysis, time series, and statistics.
-* [NumPy](http://www.numpy.org)  &mdash; Array processing for numbers, strings, records, and objects.
-* [TensorFlow](http://tensorflow.org/)
+* [NumPy](http://www.numpy.org) &mdash; Array processing for numbers, strings, records, and objects.
+* [TensorFlow](http://tensorflow.org/) &mdash; An open-source software library for dataflow programming across a range of tasks.
 * [sklearn](https://pypi.python.org/pypi/scikit-learn/) &mdash; A set of python modules for machine learning and data mining.
 * [seaborn](http://stanford.edu/~mwaskom/software/seaborn/) &mdash; Statistical data visualization.
 * [matplotlib](http://matplotlib.org) &mdash; Python plotting package.

@@ -1,5 +1,7 @@
 # Apache Spark
 
+SEE: http://www.redapt.com/using-apache-spark-machine-learning-part-1/
+
 This article will describe what Apache Spark is and provide examples of how to use it.
 
 __Apache Spark__ is an open-source cluster-computing framework. Originally developed at the University of California, Berkeley's AMPLab, the Spark codebase was later donated to the Apache Software Foundation, which has maintained it since. Spark provides an interface for programming entire clusters with implicit data parallelism and fault-tolerance.
